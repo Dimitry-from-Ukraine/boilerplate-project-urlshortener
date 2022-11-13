@@ -9,6 +9,8 @@ var cors = require("cors");
 var dns = require("dns");
 var app = express();
 var router = express.Router;
+var shortId = require("shortid");
+var validUrl = require("valid-url");
 
 // Basic Configuration
 const port = process.env.PORT || 3000;
@@ -46,12 +48,13 @@ app.get('/api/hello', function(req, res){
   res.json({greeting: 'hello API'})
 });
 
-app.post('/api/shorturl/new', async function(req, res) {
-  const url = req.body.url_input
-  const urlCode = ShortId.generate()
+app.post('/api/shorturl', async function(req, res) {
+  const url = req.body.url
+  const urlCode = shortId.generate()
   if (!validUrl.isWebUri(url)) {
-    res.status(401).json({
-      error: 'invalid URL'
+    console.log(url + ' - url is invalid')
+    res.json({
+      error: 'invalid url'
     })
   } else {
     try {
